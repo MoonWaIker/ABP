@@ -1,18 +1,11 @@
 ﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using ABPWebApi.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ABPWebApi.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
-    {
-        _logger = logger;
-    }
-
     public IActionResult Index()
     {
         return View();
