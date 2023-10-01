@@ -1,5 +1,3 @@
-using System.Xml.Linq;
-
 namespace ABPWebApi.Models
 {
     public class Experiment
@@ -8,6 +6,6 @@ namespace ABPWebApi.Models
 
         public int Count { get; set; }
 
-        public Dictionary<string, KeyValuePair<XName, string>> Devices { get; set; } = new();
+        public Dictionary<string, string> Devices { get; set; } = new();
     }
 }
