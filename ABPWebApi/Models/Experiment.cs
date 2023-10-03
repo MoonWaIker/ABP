@@ -6,6 +6,6 @@ namespace ABPWebApi.Models
 
         public int Count { get; set; }
 
-        public Dictionary<string, string> Devices { get; set; } = new();
+        public Device[] Devices { get; set; } = Array.Empty<Device>();
     }
 }

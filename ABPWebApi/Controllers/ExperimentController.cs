@@ -17,15 +17,18 @@ namespace ABPWebApi.Controllers
         private const string statisticName = "GetStatistic";
 
         private readonly IDataBase dataBase;
+        private readonly ILogger<ExperimentController> _logger;
 
-        public ExperimentController(IDataBase dataBase)
+        public ExperimentController(IServiceProvider serviceProvider)
         {
-            this.dataBase = dataBase;
+            dataBase = serviceProvider.GetRequiredService<IDataBase>();
+            _logger = serviceProvider.GetRequiredService<ILogger<ExperimentController>>();
         }
 
         [HttpGet(buttonColor, Name = buttonColorName)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<KeyValuePair<XName, string>> GetButtonColor(string deviceToken)
         {
             try
@@ -34,15 +37,21 @@ namespace ABPWebApi.Controllers
                 KeyValuePair<XName, string> result = new("button-color", Value);
                 return Ok(result);
             }
-            catch
+            catch (ArgumentNullException)
             {
                 return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(500);
             }
         }
 
         [HttpGet(price, Name = priceName)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<KeyValuePair<XName, string>> GetPrice(string deviceToken)
         {
             try
@@ -51,9 +60,14 @@ namespace ABPWebApi.Controllers
                 KeyValuePair<XName, string> result = new("price", Value);
                 return Ok(result);
             }
-            catch
+            catch (ArgumentNullException)
             {
                 return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(500);
             }
         }
 
