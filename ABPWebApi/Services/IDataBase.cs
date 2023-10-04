@@ -6,7 +6,7 @@ namespace ABPWebApi.Services
     {
         public string GetButtonColor(string deviceToken);
 
-        public string GetPrice(string deviceToken);
+        public int GetPrice(string deviceToken);
 
         public Experiment[] GetStatistic();
     }

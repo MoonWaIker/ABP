@@ -14,14 +14,22 @@ namespace ABPWebApi.Services
             { "#0000FF", 33.3m }
         };
 
-        // public DbSet<Device> Price { get; set; }
+        public DbSet<PriceDevice> Price { get; set; }
+
+        private readonly Dictionary<int, int> priceProportions = new()
+        {
+            { 10, 75 },
+            { 20, 10 },
+            { 50, 5 },
+            { 5, 10 }
+        };
 
         private const string connectionString = "Server=(localdb)\\mssqllocaldb;Database=ABP;Trusted_Connection=True;";
 
         public DataBase()
         {
             ButtonColor = Set<ButtonColorDevice>();
-            // Price = Set<Device>();
+            Price = Set<PriceDevice>();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -29,11 +37,27 @@ namespace ABPWebApi.Services
             _ = optionsBuilder.UseSqlServer(connectionString);
         }
 
-        public string GetPrice(string deviceToken)
+        public int GetPrice(string deviceToken)
         {
             DependencyInjection(deviceToken);
 
-            throw new NotImplementedException();
+            if (Price
+            .Any(device => device.DeviceToken == deviceToken))
+            {
+                return Price
+            .First(device => device.DeviceToken == deviceToken)
+            .Value;
+            }
+
+            int value = ChoosingPrice(Price, priceProportions);
+            _ = Price.Add(new()
+            {
+                DeviceToken = deviceToken,
+                Value = value
+            });
+            _ = SaveChanges();
+
+            return value;
         }
 
         public string GetButtonColor(string deviceToken)
@@ -48,7 +72,7 @@ namespace ABPWebApi.Services
             .Value;
             }
 
-            string value = Choosing(ButtonColor, buttonColorProportions);
+            string value = ChoosingButtonColor(ButtonColor, buttonColorProportions);
             _ = ButtonColor.Add(new()
             {
                 DeviceToken = deviceToken,
@@ -72,7 +96,7 @@ namespace ABPWebApi.Services
             }
         }
 
-        private static string Choosing(IEnumerable<Device> Table, Dictionary<string, decimal> proportions)
+        private static string ChoosingButtonColor(IEnumerable<ButtonColorDevice> Table, Dictionary<string, decimal> proportions)
         {
             if (!Table.Any())
             {
@@ -80,6 +104,24 @@ namespace ABPWebApi.Services
             }
 
             foreach (KeyValuePair<string, decimal> item in proportions)
+            {
+                if ((decimal)Table.Count(device => device.Value == item.Key) / (decimal)Table.Count() * 100 < item.Value)
+                {
+                    return item.Key;
+                }
+            }
+
+            return proportions.First().Key;
+        }
+
+        private static int ChoosingPrice(IEnumerable<PriceDevice> Table, Dictionary<int, int> proportions)
+        {
+            if (!Table.Any())
+            {
+                return proportions.First().Key;
+            }
+
+            foreach (KeyValuePair<int, int> item in proportions)
             {
                 if ((decimal)Table.Count(device => device.Value == item.Key) / (decimal)Table.Count() * 100 < item.Value)
                 {

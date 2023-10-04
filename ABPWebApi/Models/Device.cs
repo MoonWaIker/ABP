@@ -8,7 +8,5 @@ namespace ABPWebApi.Models
         public int Id { get; set; }
 
         public required string DeviceToken { get; set; }
-
-        public required string Value { get; set; }
     }
 }
