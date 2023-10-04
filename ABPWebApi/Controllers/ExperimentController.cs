@@ -72,7 +72,7 @@ namespace ABPWebApi.Controllers
         }
 
         [HttpGet(statistic, Name = statisticName)]
-        public Experiment[] GetStatistic()
+        public Experiments GetStatistic()
         {
             return dataBase.GetStatistic();
         }
