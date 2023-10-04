@@ -85,7 +85,23 @@ namespace ABPWebApi.Services
 
         public Experiment[] GetStatistic()
         {
-            return Array.Empty<Experiment>();
+            Experiment price = new()
+            {
+                Name = "price",
+                Count = Price.Count(),
+                Devices = Price.ToArray()
+            };
+            Experiment buttonColor = new()
+            {
+                Name = "button-color",
+                Count = ButtonColor.Count(),
+                Devices = ButtonColor.ToArray()
+            };
+            return new[]
+            {
+                price,
+                buttonColor
+            };
         }
 
         private static void DependencyInjection(string deviceToken)
