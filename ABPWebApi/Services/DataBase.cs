@@ -83,24 +83,26 @@ namespace ABPWebApi.Services
             return value;
         }
 
-        public Experiment[] GetStatistic()
+        public Experiments GetStatistic()
         {
-            Experiment price = new()
+            PriceExperiment price = new()
             {
                 Name = "price",
                 Count = Price.Count(),
                 Devices = Price.ToArray()
             };
-            Experiment buttonColor = new()
+
+            ButtonColorExperiment buttonColor = new()
             {
                 Name = "button-color",
                 Count = ButtonColor.Count(),
                 Devices = ButtonColor.ToArray()
             };
-            return new[]
+
+            return new()
             {
-                price,
-                buttonColor
+                PriceExperiment = price,
+                ButtonColorExperiment = buttonColor
             };
         }
 

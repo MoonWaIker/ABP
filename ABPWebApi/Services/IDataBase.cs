@@ -8,6 +8,6 @@ namespace ABPWebApi.Services
 
         public int GetPrice(string deviceToken);
 
-        public Experiment[] GetStatistic();
+        public Experiments GetStatistic();
     }
 }
