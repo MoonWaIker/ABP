@@ -14,14 +14,14 @@ namespace ABPWebApi.Services
             { "#0000FF", 33.3m }
         };
 
-        public DbSet<Device> ButtonColor { get; set; }
+        // public DbSet<Device> ButtonColor { get; set; }
 
         private const string connectionString = "Server=(localdb)\\mssqllocaldb;Database=ABP;Trusted_Connection=True;";
 
         public DataBase()
         {
             Price = Set<PriceDevice>();
-            ButtonColor = Set<Device>();
+            // ButtonColor = Set<Device>();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -33,16 +33,23 @@ namespace ABPWebApi.Services
         {
             DependencyInjection(deviceToken);
 
-            if (ButtonColor
+            throw new NotImplementedException();
+        }
+
+        public string GetPrice(string deviceToken)
+        {
+            DependencyInjection(deviceToken);
+
+            if (Price
             .Any(device => device.DeviceToken == deviceToken))
             {
-                return ButtonColor
+                return Price
             .First(device => device.DeviceToken == deviceToken)
             .Value;
             }
 
             string value = Choosing(Price, priceProportions);
-            _ = ButtonColor.Add(new()
+            _ = Price.Add(new()
             {
                 DeviceToken = deviceToken,
                 Value = value
@@ -50,13 +57,6 @@ namespace ABPWebApi.Services
             _ = SaveChanges();
 
             return value;
-        }
-
-        public string GetPrice(string deviceToken)
-        {
-            DependencyInjection(deviceToken);
-
-            return string.Empty;
         }
 
         public Experiment[] GetStatistic()
@@ -72,7 +72,7 @@ namespace ABPWebApi.Services
             }
         }
 
-        private static string Choosing(DbSet<PriceDevice> Table, Dictionary<string, decimal> proportions)
+        private static string Choosing(IEnumerable<Device> Table, Dictionary<string, decimal> proportions)
         {
             if (!Table.Any())
             {
@@ -81,7 +81,7 @@ namespace ABPWebApi.Services
 
             foreach (KeyValuePair<string, decimal> item in proportions)
             {
-                if (Table.Count(device => device.Value == item.Key) / Table.Count() * 100 < item.Value)
+                if ((decimal)Table.Count(device => device.Value == item.Key) / (decimal)Table.Count() * 100 < item.Value)
                 {
                     return item.Key;
                 }
