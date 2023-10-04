@@ -5,23 +5,23 @@ namespace ABPWebApi.Services
 {
     public class DataBase : DbContext, IDataBase
     {
-        public DbSet<PriceDevice> Price { get; set; }
+        public DbSet<ButtonColorDevice> ButtonColor { get; set; }
 
-        private readonly Dictionary<string, decimal> priceProportions = new()
+        private readonly Dictionary<string, decimal> buttonColorProportions = new()
         {
             { "#FF0000", 33.3m },
             { "#00FF00", 33.3m },
             { "#0000FF", 33.3m }
         };
 
-        // public DbSet<Device> ButtonColor { get; set; }
+        // public DbSet<Device> Price { get; set; }
 
         private const string connectionString = "Server=(localdb)\\mssqllocaldb;Database=ABP;Trusted_Connection=True;";
 
         public DataBase()
         {
-            Price = Set<PriceDevice>();
-            // ButtonColor = Set<Device>();
+            ButtonColor = Set<ButtonColorDevice>();
+            // Price = Set<Device>();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -29,27 +29,27 @@ namespace ABPWebApi.Services
             _ = optionsBuilder.UseSqlServer(connectionString);
         }
 
-        public string GetButtonColor(string deviceToken)
+        public string GetPrice(string deviceToken)
         {
             DependencyInjection(deviceToken);
 
             throw new NotImplementedException();
         }
 
-        public string GetPrice(string deviceToken)
+        public string GetButtonColor(string deviceToken)
         {
             DependencyInjection(deviceToken);
 
-            if (Price
+            if (ButtonColor
             .Any(device => device.DeviceToken == deviceToken))
             {
-                return Price
+                return ButtonColor
             .First(device => device.DeviceToken == deviceToken)
             .Value;
             }
 
-            string value = Choosing(Price, priceProportions);
-            _ = Price.Add(new()
+            string value = Choosing(ButtonColor, buttonColorProportions);
+            _ = ButtonColor.Add(new()
             {
                 DeviceToken = deviceToken,
                 Value = value
