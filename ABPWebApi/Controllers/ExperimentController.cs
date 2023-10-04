@@ -52,12 +52,12 @@ namespace ABPWebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<KeyValuePair<XName, string>> GetPrice(string deviceToken)
+        public ActionResult<KeyValuePair<XName, int>> GetPrice(string deviceToken)
         {
             try
             {
-                string Value = dataBase.GetPrice(deviceToken);
-                KeyValuePair<XName, string> result = new("price", Value);
+                int Value = dataBase.GetPrice(deviceToken);
+                KeyValuePair<XName, int> result = new("price", Value);
                 return Ok(result);
             }
             catch (ArgumentNullException)
